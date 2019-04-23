@@ -11,11 +11,15 @@
   <title>Simple Sidebar - Start Bootstrap Template</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 
   <!-- Custom styles for this template -->
-  <link href="../css/simple-sidebar.css" rel="stylesheet">
-  <link href="../css/products.css" rel="stylesheet">
+  <link href="/static/css/simple-sidebar.css" rel="stylesheet">
+  <link href="/static/css/products.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 </head>
 
@@ -33,9 +37,10 @@
     <div class="bg-light border-right" id="sidebar-wrapper">
       <div class="sidebar-heading">Menu Items</div>
       <div class="list-group list-group-flush">
-        <a href="profile.html" class="list-group-item list-group-item-action bg-light">Profile</a>
-        <a href="products.html" class="list-group-item list-group-item-action bg-light activate">Products</a>
-        <a href="orders.html" class="list-group-item list-group-item-action bg-light">Orders</a>
+        <a href="profile" class="list-group-item list-group-item-action bg-light activate">Edit Profile</a>
+        <a href="users" class="list-group-item list-group-item-action bg-light activate">Users</a>
+        <a href="products" class="list-group-item list-group-item-action bg-light activate">Products</a>
+        <a href="orders" class="list-group-item list-group-item-action bg-light">Orders</a>
       </div>
     </div>
     <!-- /#sidebar-wrapper -->
@@ -73,163 +78,47 @@
         </div>
       </nav>
 
-      <div class="container-fluid">
-        <h1 class="mt-4">Products</h1>
-        <div id="carousel-example" class="carousel slide hidden-xs" data-ride="carousel">
-          <!-- Wrapper for slides -->
-          <div class="carousel-inner">
-            <div class="item active">
-              <div class="row top-buffer">
-                <div class="col-sm-3 top-buffer">
-                  <div class="col-item">
-                    <div class="photo">
-                      <img src="http://placehold.it/350x260" class="img-responsive" alt="a" />
-                    </div>
-                    <div class="info">
-                      <div class="row">
-                        <div class="price col-md-12">
-                          <h5>Product Name</h5>
-                        </div>
+      <div class="container-fluid" id="app">
+        <h1 class="mt-4">Products
+          <i class="fa fa-plus" aria-hidden="true" style="color:green" v-on:click="addNew=true"></i>
+        </h1>
+        <table class="table" id="app">
+          <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>actions</th>
+          </tr>
+          <tr v-if="addNew">
+            <td><input type="text" v-model="newProduct.name"></td>
+            <td><input type="text" v-model="newProduct.quantity"></td>
+            <td><input type="text" v-model="newProduct.price"></td>
+            <td><button v-on:click="addProduct()">Add</button>
+              <button v-on:click="addNew=false">Close</button>
+              <i class="fa fa-cloud-upload" aria-hidden="true" style="color:green" v-if="productAdded"></i>
+            </td>
 
-                      </div>
-                      <div class="separator clear-left">
-                        <p class="btn-add">
-                          <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
+          </tr>
 
-                        <p class="price-text-color">
-                          $199.99</p>
-                      </div>
-                      <div class="clearfix">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-sm-3 top-buffer">
-                  <div class="col-item">
-                    <div class="photo">
-                      <img src="http://placehold.it/350x260" class="img-responsive" alt="a" />
-                    </div>
-                    <div class="info">
-                      <div class="row">
-                        <div class="price col-md-12">
-                          <h5>Product Name</h5>
-                        </div>
+          <tr v-if="editProduct">
+            <td><input type="text" v-model="virtualProduct.name"></td>
+            <td><input type="text" v-model="virtualProduct.quantity"></td>
+            <td><input type="text" v-model="virtualProduct.price"></td>
+            <td><button v-on:click="updateProduct()">Update</button>
+              <button v-on:click="editProduct=false;virtualProduct={}">Close</button>
+              <i class="fa fa-cloud-upload" aria-hidden="true" style="color:green" v-if="productUpdated"></i>
+            </td>
 
-                      </div>
-                      <div class="separator clear-left">
-                        <p class="btn-add">
-                          <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
+          </tr>
 
-                        <p class="price-text-color">
-                          $199.99</p>
-                      </div>
-                      <div class="clearfix">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-sm-3 top-buffer">
-                  <div class="col-item">
-                    <div class="photo">
-                      <img src="http://placehold.it/350x260" class="img-responsive" alt="a" />
-                    </div>
-                    <div class="info">
-                      <div class="row">
-                        <div class="price col-md-12">
-                          <h5>Product Name</h5>
-                        </div>
-
-                      </div>
-                      <div class="separator clear-left">
-                        <p class="btn-add">
-                          <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
-
-                        <p class="price-text-color">
-                          $199.99</p>
-                      </div>
-                      <div class="clearfix">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-sm-3 top-buffer">
-                  <div class="col-item">
-                    <div class="photo">
-                      <img src="http://placehold.it/350x260" class="img-responsive" alt="a" />
-                    </div>
-                    <div class="info">
-                      <div class="row">
-                        <div class="price col-md-12">
-                          <h5>Product Name</h5>
-                        </div>
-
-                      </div>
-                      <div class="separator clear-left">
-                        <p class="btn-add">
-                          <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
-
-                        <p class="price-text-color">
-                          $199.99</p>
-                      </div>
-                      <div class="clearfix">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-sm-3 top-buffer">
-                  <div class="col-item">
-                    <div class="photo">
-                      <img src="http://placehold.it/350x260" class="img-responsive" alt="a" />
-                    </div>
-                    <div class="info">
-                      <div class="row">
-                        <div class="price col-md-12">
-                          <h5>Product Name</h5>
-                        </div>
-
-                      </div>
-                      <div class="separator clear-left">
-                        <p class="btn-add">
-                          <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
-
-                        <p class="price-text-color">
-                          $199.99</p>
-                      </div>
-                      <div class="clearfix">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-sm-3 top-buffer">
-                  <div class="col-item">
-                    <div class="photo">
-                      <img src="http://placehold.it/350x260" class="img-responsive" alt="a" />
-                    </div>
-                    <div class="info">
-                      <div class="row">
-                        <div class="price col-md-12">
-                          <h5>Product Name</h5>
-                        </div>
-
-                      </div>
-                      <div class="separator clear-left">
-                        <p class="btn-add">
-                          <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
-
-                        <p class="price-text-color">
-                          $199.99</p>
-                      </div>
-                      <div class="clearfix">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-
-              </div>
-            </div>
-          </div>
-        </div>
+          <tr v-for="product of products">
+            <td>{{product.name}}</td>
+            <td>{{product.quantity}}</td>
+            <td>{{product.price}}</td>
+            <td><button v-on:click="delProduct(product)">Delete</button>
+            <button v-on:click="editProduct=true;virtualProduct=product">Edit</button></td>
+          </tr>
+        </table>
       </div>
     </div>
     <!-- /#page-content-wrapper -->
@@ -238,8 +127,8 @@
   <!-- /#wrapper -->
 
   <!-- Bootstrap core JavaScript -->
-  <script src="../vendor/jquery/jquery.min.js"></script>
-  <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/vendor/jquery/jquery.min.js"></script>
+  <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <!-- Menu Toggle Script -->
   <script>
@@ -247,6 +136,81 @@
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");
     });
+  </script>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data () {
+        return {
+          addNew: false,
+          productAdded: false,
+          editProduct: false,
+          productUpdated: false,
+          products: [],
+          newProduct:{
+
+          },
+          virtualProduct:{}
+        }
+      },
+      mounted () {
+        this.getProducts()
+      },
+      methods:{
+        getProducts: function () {
+          this.products = []
+          axios.get('/admin/getProducts')
+                  .then(response => (this.products = response.data))
+                  .catch(err => console.log(err))
+        },
+        addProduct: function () {
+          console.log("add product method calculated")
+          console.log(this.newProduct)
+          axios.post('/admin/addProduct',this.newProduct)
+                  .then(response => {
+                    this.productAdded = response.data
+                    if(this.productAdded) {
+                      this.getProducts()
+                      this.newProduct = {}
+                    }
+                    setTimeout(()=>{
+                      this.productAdded = false
+                    },1000*5)
+                  }).catch(function(err){
+            console.log(err)
+          })
+        },
+        updateProduct: function () {
+          axios.post('/admin/updateProduct',this.virtualProduct)
+                  .then(response => {
+                    this.productUpdated = response.data
+                    if(this.productUpdated) {
+                      this.getProducts()
+                      this.virtualProduct = {}
+                    }
+                    setTimeout(()=>{
+                      this.productUpdated = false
+                      this.editProduct = false
+                    },1000*5)
+                  }).catch(function(err) {
+            console.log(err)
+          })
+        },
+
+        delProduct: function (product) {
+          let productName = product.name
+          productName = productName.toString()
+          if(confirm(`Do you really want to delete the product ${{productName}}`)) {
+            axios.get(`/admin/deleteProduct?id=${product._id}`).then(response => {
+              if(response.data) {
+                this.getProducts()
+              }
+            })
+          }
+        }
+      }
+    })
   </script>
 
 </body>

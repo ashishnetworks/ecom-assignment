@@ -5,6 +5,8 @@
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <meta name="description" content="">
   <meta name="author" content="">
 
@@ -27,9 +29,9 @@
       <div class="sidebar-heading">Menu Items</div>
       <div class="list-group list-group-flush">
         <a href="profile" class="list-group-item list-group-item-action bg-light activate">Edit Profile</a>
-        <a href="users" class="list-group-item list-group-item-action bg-light">Profile</a>
+        <a href="users" class="list-group-item list-group-item-action bg-light activate">Users</a>
         <a href="products" class="list-group-item list-group-item-action bg-light">Products</a>
-        <a href="orders" class="list-group-item list-group-item-action bg-light activate">Orders</a>
+        <a href="orders" class="list-group-item list-group-item-action bg-light">Orders</a>
       </div>
     </div>
     <!-- /#sidebar-wrapper -->
@@ -66,21 +68,20 @@
           </ul>
         </div>
       </nav>
-
       <div class="container-fluid">
-        <h1 class="mt-4">Orders</h1>
-        <table class="table">
+        <h1 class="mt-4">All Users</h1>
+        <table class="table" id="app">
           <tr>
-            <th>Order Date</th>
-            <th>Delivery Date</th>
-            <th>Amount</th>
-            <th>Invoice</th>
+            <th>Full Name</th>
+            <th>username</th>
+            <th>type</th>
+            <th>actions</th>
           </tr>
-          <tr>
-            <td>1</td>
-            <td>Wheat</td>
-            <td>Good</td>
-            <td>200 Bags</td>
+          <tr v-for="user of users">
+            <td>{{user.fullname}}</td>
+            <td>{{user.username}}</td>
+            <td>{{user.type}}</td>
+            <td><button v-on:click="delUser(user.username)">Delete</button></td>
           </tr>
         </table>
       </div>
@@ -100,6 +101,34 @@
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");
     });
+  </script>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data () {
+        return {
+          users: []
+        }
+      },
+      mounted () {
+        this.refreshUsers()
+      },
+      methods:{
+        refreshUsers : function() {
+          this.users = []
+          axios.get('/admin/getAllUsers')
+                  .then(response => (this.users = response.data))
+        },
+        delUser: function(username) {
+          if(confirm(`Do you really want to delete user ${{username}}`)) {
+            axios.get(`/admin/delUser?username=${username}`).then(response => {
+              this.refreshUsers()
+            })
+          }
+        }
+      }
+    })
   </script>
 
 </body>

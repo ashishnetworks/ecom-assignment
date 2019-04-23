@@ -5,16 +5,20 @@
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <meta name="description" content="">
   <meta name="author" content="">
 
   <title>Simple Sidebar - Start Bootstrap Template</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
-  <link href="../css/simple-sidebar.css" rel="stylesheet">
+  <link href="/static/css/simple-sidebar.css" rel="stylesheet">
+
+
 
 </head>
 
@@ -26,9 +30,10 @@
     <div class="bg-light border-right" id="sidebar-wrapper">
       <div class="sidebar-heading">Menu Items</div>
       <div class="list-group list-group-flush">
-        <a href="profile.html" class="list-group-item list-group-item-action bg-light activate">Profile</a>
-        <a href="products.html" class="list-group-item list-group-item-action bg-light">Products</a>
-        <a href="orders.html" class="list-group-item list-group-item-action bg-light">Orders</a>
+        <a href="profile" class="list-group-item list-group-item-action bg-light activate">Edit Profile</a>
+        <a href="users" class="list-group-item list-group-item-action bg-light activate">Users</a>
+        <a href="products" class="list-group-item list-group-item-action bg-light">Products</a>
+        <a href="orders" class="list-group-item list-group-item-action bg-light">Orders</a>
       </div>
     </div>
     <!-- /#sidebar-wrapper -->
@@ -65,23 +70,69 @@
           </ul>
         </div>
       </nav>
+        <div class="card" id="app">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <h4>Your Profile</h4>
+                <hr>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <form v-on:submit.prevent="updateUserDetail">
+                  <div class="form-group row">
+                    <label for="fullname" class="col-4 col-form-label">Full Name</label>
+                    <div class="col-8">
+                      <input id="fullname" name="fullname" placeholder="Full Name" class="form-control here" required="required" type="text" v-model="user.fullname">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-4 col-form-label">Username</label>
+                    <div class="col-8">
+                      <strong>{{user.username}}</strong>
+                    </div>
+                  </div>
 
-      <div class="container-fluid">
-        <h1 class="mt-4">Profile</h1>
-        <div class="panel panel-default">
-          <div class="panel-heading">This Page is Disabled</div>
-          <div class="panel-body">This page is temporarily disabled by the site administrator for some reason.<br> <a href="#">Click here</a> to enable the page.</div>
+                  <div class="form-group row">
+                    <label class="col-4 col-form-label">User Type</label>
+                    <div class="col-8">
+                      <strong>{{user.type}}</strong>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <label for="Address" class="col-4 col-form-label">Address</label>
+                    <div class="col-8">
+                      <textarea id="address" name="address" cols="40" rows="4" class="form-control" v-model="user.address"></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="password" class="col-4 col-form-label">New Password</label>
+                    <div class="col-8">
+                      <input id="password" name="password" placeholder="New Password" class="form-control here" type="password" v-model="user.password">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="offset-4 col-8">
+                      <button name="submit" type="submit" class="btn btn-primary">Update My Profile</button>
+                      <i v-if="updated">Updated Successfully</i>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+          </div>
         </div>
-      </div>
-    </div>
     <!-- /#page-content-wrapper -->
 
   </div>
   <!-- /#wrapper -->
 
-  <!-- Bootstrap core JavaScript -->
-  <script src="../vendor/jquery/jquery.min.js"></script>
-  <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script src="/static/vendor/jquery/jquery.min.js"></script>
+    <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <!-- Menu Toggle Script -->
   <script>
@@ -89,6 +140,40 @@
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");
     });
+  </script>
+
+  <script>
+    new Vue({
+      el: '#app',
+      data () {
+        return {
+          user: {},
+          updated: false
+        }
+      },
+      mounted () {
+        this.refreshUser()
+      },
+      methods:{
+        refreshUser : function() {
+          this.user = {}
+          axios.get('/admin/getUserDetail')
+                  .then(response => (this.user = response.data))
+        },
+        updateUserDetail: function() {
+          axios.post('/admin/updateUserDetail',this.user)
+                  .then(response => {
+                    this.updated = response
+                    setTimeout(()=>{
+                      this.updated = false
+                    },1000*5)
+                  }).catch(function(err){
+                    console.log(err)
+          })
+          this.refreshUser()
+        }
+      }
+    })
   </script>
 
 </body>

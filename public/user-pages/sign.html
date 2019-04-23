@@ -1,6 +1,10 @@
 <link href="/static/vendor/bootstrap/css/bootstrap.css" rel="stylesheet" id="bootstrap-css">
 <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="/static/vendor/jquery/jquery.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
 <!------ Include the above in your HEAD tag ---------->
 
 <!---*************welcome this is my simple empty strap by John Niro Yumang ******************* -->
@@ -14,55 +18,59 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 <head>
-    <script src="jquery/jquery.min.js"></script>
-    <!---- jquery link local dont forget to place this in first than other script or link or may not work ---->
 
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <!---- boostrap.min link local ----->
-
-    <link rel="stylesheet" href="css/style.css">
-    <!---- boostrap.min link local ----->
-
-    <script src="js/bootstrap.min.js"></script>
-    <!---- Boostrap js link local ----->
-
-    <link rel="icon" href="images/icon.png" type="image/x-icon" />
-    <!---- Icon link local ----->
-
-    <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
-    <!---- Font awesom link local ----->
 </head>
 <body>
 <div class="container-fluid">
-    <div class="container">
+    <div class="container" id="signup">
         <h2 class="text-center" id="title">E-Commerce Login Page for Simple Users</h2>
         <p class="text-center">
-            <small id="passwordHelpInline" class="text-muted"> This pannel is for simple user's signup and login activity</small>
+            <small id="passwordHelpInline" class="text-muted"> This pannel is for simple myapp's signup and login activity</small>
         </p>
         <hr>
         <div class="row">
             <div class="col-md-5">
-                <form role="form" method="post" action="register.php">
+
+                <p v-if="errors.length">
+                    <b>Please correct the following error(s):</b>
+                <ul>
+                    <li v-for="error in errors">{{ error }}</li>
+                </ul>
+                </p>
+
+                <form v-on:submit.prevent="signup">
                     <fieldset>
                         <p class="text-uppercase pull-center"> SIGN UP.</p>
                         <div class="form-group">
-                            <input type="text" name="username" id="username" class="form-control input-lg" placeholder="username">
+                            <input type="text" name="fullname" id="fullname" class="form-control input-lg" placeholder="Full Name" v-model="signupData.fullname">
+                        </div>
+
+
+                        <div class="form-group">
+                            <input type="text" name="username" id="username" class="form-control input-lg" placeholder="username" v-model="signupData.username">
                         </div>
 
                         <div class="form-group">
-                            <input type="password" name="password" id="password" class="form-control input-lg" placeholder="Password">
+                            <input type="password" name="password" id="password" class="form-control input-lg" placeholder="Password" v-model="signupData.password">
                         </div>
                         <div class="form-group">
-                            <input type="password" name="password2" id="password2" class="form-control input-lg" placeholder="Password2">
+                            <input type="password" name="password2" id="password2" class="form-control input-lg" placeholder="Password2" v-model="signupData.password2">
                         </div>
 
                         <div class="form-group">
-                            <input type="text" name="addrress" id="address" class="form-control input-lg" placeholder="address">
+                            <input type="text" name="address" id="address" class="form-control input-lg" placeholder="address" v-model="signupData.address">
                         </div>
 
                         <div>
-                            <input type="submit" class="btn btn-lg btn-primary   value="Register">
+                            <input type="submit" class="btn btn-lg btn-primary" value="Register">
                         </div>
+
+                        <p v-if="success.length">
+                        <ul>
+                            <li v-for="message in success">{{ message }}</li>
+                        </ul>
+                        </p>
+
                     </fieldset>
                 </form>
             </div>
@@ -72,12 +80,12 @@
             </div>
 
             <div class="col-md-5">
-                <form role="form">
+                <form role="form" method="post" action="signin">
                     <fieldset>
                         <p class="text-uppercase"> Login using your account: </p>
 
                         <div class="form-group">
-                            <input type="email" name="username" id="username" class="form-control input-lg" placeholder="username">
+                            <input type="text" name="username" id="username" class="form-control input-lg" placeholder="username">
                         </div>
                         <div class="form-group">
                             <input type="password" name="password" id="password" class="form-control input-lg" placeholder="Password">
@@ -96,6 +104,46 @@
     </p>
 </div>
 </body>
+
+<script>
+    var app = new Vue({
+        el: "#signup",
+        data: {
+            errors: [],
+            success: [],
+            signupData: {
+                fullname: null,
+                username:null,
+                password:null,
+                password2:null,
+                address:null
+            }
+        },
+        methods:{
+            signup: function() {
+                console.log("function called")
+                let that = this
+                that.success = []
+                that.errors = []
+
+                axios.post('http://localhost:3000/user/signup', this.signupData)
+                    .then(function (response) {
+                        let reply = response.data
+                        console.log(reply)
+                        if(reply.error) {
+                            that.errors.push(reply.message)
+                        } else {
+                            that.success.push(reply.message)
+                            that.success.push("You are ready to login")
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            }
+        }
+    })
+</script>
 
 
 </html>
