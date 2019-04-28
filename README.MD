@@ -8,14 +8,13 @@
 This is very simple demo of a ecommerse website, 
 It has two panels
 
-1. Admin Panel
-
+##### 1. Admin Panel
 Admin pannel, which allows admin to add
 new products into the eCom website and also it allows
 user to see all the orders done so far and see all the
 available users. Admin can download pdf for user's invoice
 
-2.User Panel
+##### 2. User Panel
 
 It allows a simple user to login to the website and request for
 his order. User can also download invoice for his order
