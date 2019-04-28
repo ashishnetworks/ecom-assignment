@@ -21,11 +21,11 @@ his order. User can also download invoice for his order
 and also he can see the all the order that he has made
 so far
 
-####Requirements
+#### Requirements
 
 NodeJs 8.9.0, Docker, Docker-compose
 
-####How to install
+#### How to install
 Simply clone this repo and make sure you have all
 the above requrements preinstalled in your computer
 and then you can follow following step
