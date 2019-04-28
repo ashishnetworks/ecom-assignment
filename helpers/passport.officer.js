@@ -4,7 +4,6 @@ const LocalStrategy = require("passport-local").Strategy
 const userModel = require("../db/models/user")
 
 passport.use(new LocalStrategy({},async function(username,password,done) {
-    console.log("Local strategry executed")
 
     let userObject = null
 
@@ -16,7 +15,6 @@ passport.use(new LocalStrategy({},async function(username,password,done) {
 
     if(userObject) {
         if(userObject.password === password) {
-            console.log("password matched")
             done(null,userObject)
             return
         }
@@ -26,13 +24,10 @@ passport.use(new LocalStrategy({},async function(username,password,done) {
 }))
 
 passport.serializeUser(function(user,done) {
-    console.log("serialize executed")
-
     done(null,user)
 })
 
 passport.deserializeUser(function(user, done) {
-    console.log("desirialize strategry executed")
     let  o = {username:user.username,type:user.type}
     done(null,o)
 })

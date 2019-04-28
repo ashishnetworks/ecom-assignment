@@ -4,6 +4,7 @@ const path = require("path")
 const router = express.Router()
 const userModel = require("../db/models/user")
 const productModel = require("../db/models/products")
+const orderModel = require("../db/models/orders")
 const passportOfficer = require("../helpers/passport.officer")
 
 router.get("/hi",function(req,res){
@@ -64,6 +65,11 @@ router.post("/signin",passportOfficer.authenticate("local",{
     successRedirect:"/admin/users",
     failureRedirect:"/admin/sign"
 }))
+
+router.get("/signOut", function(req,res) {
+    req.logout();
+    res.redirect('sign');
+})
 
 router.use("/", function(req,res,next){
     if(req.user) {
@@ -269,6 +275,17 @@ router.get("/orders",function(req,res){
     res.sendFile("admin-pages/orders.html",{
         root:path.join(__dirname,"../public/")
     })
+})
+
+router.get("/getOrders", async function(req,res) {
+    let orders = []
+    try {
+        orders = await orderModel.find({})
+    } catch (err) {
+        console.log(err)
+    }
+
+    res.send(orders)
 })
 
 

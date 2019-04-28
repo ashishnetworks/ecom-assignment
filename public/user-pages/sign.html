@@ -2,8 +2,8 @@
 <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="/static/vendor/jquery/jquery.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="/static/js/vue.js"></script>
+<script src="/static/js/axios.min.js"></script>
 
 <!------ Include the above in your HEAD tag ---------->
 
@@ -25,8 +25,10 @@
     <div class="container" id="signup">
         <h2 class="text-center" id="title">E-Commerce Login Page for Simple Users</h2>
         <p class="text-center">
-            <small id="passwordHelpInline" class="text-muted"> This pannel is for simple myapp's signup and login activity</small>
+            <small id="passwordHelpInline" class="text-muted"> This pannel is for <strong>simple</strong> myapp's signup and login activity</small>
         </p>
+        <a href="/user/sign"><input class="btn btn-primary" value="User's Page"></a>
+        <a href="/admin/sign"><input class="btn btn-primary" value="Admin's Page"></a>
         <hr>
         <div class="row">
             <div class="col-md-5">
@@ -62,7 +64,7 @@
                         </div>
 
                         <div>
-                            <input type="submit" class="btn btn-lg btn-primary" value="Register">
+                            <input type="submit" class="btn btn-lg btn-primary" value="User Register">
                         </div>
 
                         <p v-if="success.length">
@@ -91,7 +93,7 @@
                             <input type="password" name="password" id="password" class="form-control input-lg" placeholder="Password">
                         </div>
                         <div>
-                            <input type="submit" class="btn btn-primary" value="Sign In">
+                            <input type="submit" class="btn btn-primary" value="User Sign In">
                         </div>
 
                     </fieldset>

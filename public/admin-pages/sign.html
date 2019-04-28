@@ -25,8 +25,10 @@
     <div class="container" id="signup">
         <h2 class="text-center" id="title">E-Commerce Login Page for Admin Users</h2>
         <p class="text-center">
-            <small id="passwordHelpInline" class="text-muted"> This pannel is for admin myapp's signup and login activity</small>
+            <small id="passwordHelpInline" class="text-muted"> This pannel is for <strong>admin</strong> myapp's signup and login activity</small>
         </p>
+        <a href="/user/sign"><input class="btn btn-primary" value="User's Page"></a>
+        <a href="/admin/sign"><input class="btn btn-primary" value="Admin's Page"></a>
         <hr>
         <div class="row">
             <div class="col-md-5">
@@ -62,7 +64,7 @@
                         </div>
 
                         <div>
-                            <input type="submit" class="btn btn-lg btn-primary" value="Register">
+                            <input type="submit" class="btn btn-lg btn-primary" value="Admin Register">
                         </div>
 
                         <p v-if="success.length">
@@ -91,7 +93,7 @@
                             <input type="password" name="password" id="password" class="form-control input-lg" placeholder="Password">
                         </div>
                         <div>
-                            <input type="submit" class="btn btn-primary" value="Sign In">
+                            <input type="submit" class="btn btn-primary" value="Admin Sign In">
                         </div>
 
                     </fieldset>

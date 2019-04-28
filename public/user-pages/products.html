@@ -17,6 +17,10 @@
   <link href="/static/css/simple-sidebar.css" rel="stylesheet">
   <link href="/static/css/products.css" rel="stylesheet">
 
+
+  <script src="/static/js/vue.js"></script>
+  <script src="/static/js/axios.min.js"></script>
+
 </head>
 
 <style>
@@ -33,9 +37,9 @@
     <div class="bg-light border-right" id="sidebar-wrapper">
       <div class="sidebar-heading">Menu Items</div>
       <div class="list-group list-group-flush">
-        <a href="profile.html" class="list-group-item list-group-item-action bg-light">Profile</a>
-        <a href="products.html" class="list-group-item list-group-item-action bg-light activate">Products</a>
-        <a href="orders.html" class="list-group-item list-group-item-action bg-light">Orders</a>
+        <a href="profilePage" class="list-group-item list-group-item-action bg-light">Profile</a>
+        <a href="productsPage" class="list-group-item list-group-item-action bg-light activate">Products</a>
+        <a href="ordersPage" class="list-group-item list-group-item-action bg-light">Orders</a>
       </div>
     </div>
     <!-- /#sidebar-wrapper -->
@@ -53,34 +57,46 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
             <li class="nav-item active">
-              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="signOut">Sign Out <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Dropdown
-              </a>
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </div>
             </li>
           </ul>
         </div>
       </nav>
 
-      <div class="container-fluid">
-        <h1 class="mt-4">Products</h1>
-        <div id="carousel-example" class="carousel slide hidden-xs" data-ride="carousel">
+      <div class="container-fluid" id="app">
+        <h1 class="mt-4">Products
+          <button v-on:click="showCart=!showCart">Show <i class="fa fa-shopping-cart"></i> ({{cart.length}})</button>
+        </h1>
+
+        <div v-if="showCart">
+          <table class="table">
+            <tr>
+              <th>Product Name</th>
+              <th>Price</th>
+            </tr>
+            <tr v-for="product of cart">
+              <td>{{product.name}}</td>
+              <td>{{product.price}}</td>
+            </tr>
+            <tr>
+              <th>Total</th>
+              <th>{{cart.reduce((accumulator,product)=>accumulator+product.price,0)}}</th>
+            </tr>
+            <tr v-if="cart.length>0">
+              <td>
+                <button v-on:click="makeOrder()">Checkout</button>
+              </td>
+            </tr>
+          </table>
+          <b v-if="orderDone">Order Placed Successfully :)</b>
+        </div>
+        <div id="carousel-example" class="carousel slide hidden-xs" data-ride="carousel" v-if="!showCart">
           <!-- Wrapper for slides -->
           <div class="carousel-inner">
             <div class="item active">
               <div class="row top-buffer">
-                <div class="col-sm-3 top-buffer">
+                <div class="col-sm-3 top-buffer" v-for="product of products">
                   <div class="col-item">
                     <div class="photo">
                       <img src="http://placehold.it/350x260" class="img-responsive" alt="a" />
@@ -88,144 +104,20 @@
                     <div class="info">
                       <div class="row">
                         <div class="price col-md-12">
-                          <h5>Product Name</h5>
+                          <h5>{{product.name}}</h5>
                         </div>
 
                       </div>
                       <div class="separator clear-left">
-                        <p class="btn-add">
-                          <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
-
+                        <cart-actions v-bind:product="product"></cart-actions>
                         <p class="price-text-color">
-                          $199.99</p>
+                          Price: {{product.price}} INR</p>
                       </div>
                       <div class="clearfix">
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="col-sm-3 top-buffer">
-                  <div class="col-item">
-                    <div class="photo">
-                      <img src="http://placehold.it/350x260" class="img-responsive" alt="a" />
-                    </div>
-                    <div class="info">
-                      <div class="row">
-                        <div class="price col-md-12">
-                          <h5>Product Name</h5>
-                        </div>
-
-                      </div>
-                      <div class="separator clear-left">
-                        <p class="btn-add">
-                          <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
-
-                        <p class="price-text-color">
-                          $199.99</p>
-                      </div>
-                      <div class="clearfix">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-sm-3 top-buffer">
-                  <div class="col-item">
-                    <div class="photo">
-                      <img src="http://placehold.it/350x260" class="img-responsive" alt="a" />
-                    </div>
-                    <div class="info">
-                      <div class="row">
-                        <div class="price col-md-12">
-                          <h5>Product Name</h5>
-                        </div>
-
-                      </div>
-                      <div class="separator clear-left">
-                        <p class="btn-add">
-                          <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
-
-                        <p class="price-text-color">
-                          $199.99</p>
-                      </div>
-                      <div class="clearfix">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-sm-3 top-buffer">
-                  <div class="col-item">
-                    <div class="photo">
-                      <img src="http://placehold.it/350x260" class="img-responsive" alt="a" />
-                    </div>
-                    <div class="info">
-                      <div class="row">
-                        <div class="price col-md-12">
-                          <h5>Product Name</h5>
-                        </div>
-
-                      </div>
-                      <div class="separator clear-left">
-                        <p class="btn-add">
-                          <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
-
-                        <p class="price-text-color">
-                          $199.99</p>
-                      </div>
-                      <div class="clearfix">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-sm-3 top-buffer">
-                  <div class="col-item">
-                    <div class="photo">
-                      <img src="http://placehold.it/350x260" class="img-responsive" alt="a" />
-                    </div>
-                    <div class="info">
-                      <div class="row">
-                        <div class="price col-md-12">
-                          <h5>Product Name</h5>
-                        </div>
-
-                      </div>
-                      <div class="separator clear-left">
-                        <p class="btn-add">
-                          <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
-
-                        <p class="price-text-color">
-                          $199.99</p>
-                      </div>
-                      <div class="clearfix">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-sm-3 top-buffer">
-                  <div class="col-item">
-                    <div class="photo">
-                      <img src="http://placehold.it/350x260" class="img-responsive" alt="a" />
-                    </div>
-                    <div class="info">
-                      <div class="row">
-                        <div class="price col-md-12">
-                          <h5>Product Name</h5>
-                        </div>
-
-                      </div>
-                      <div class="separator clear-left">
-                        <p class="btn-add">
-                          <i class="fa fa-shopping-cart"></i><a href="http://www.jquery2dotnet.com" class="hidden-sm">Add to cart</a></p>
-
-                        <p class="price-text-color">
-                          $199.99</p>
-                      </div>
-                      <div class="clearfix">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-
               </div>
             </div>
           </div>
@@ -238,8 +130,8 @@
   <!-- /#wrapper -->
 
   <!-- Bootstrap core JavaScript -->
-  <script src="../vendor/jquery/jquery.min.js"></script>
-  <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/vendor/jquery/jquery.min.js"></script>
+  <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <!-- Menu Toggle Script -->
   <script>
@@ -247,6 +139,92 @@
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");
     });
+  </script>
+
+  <script>
+
+    Vue.component('cart-actions', {
+      props: ['product'],
+      data: function () {
+        let count = 0
+        for(let index=0;index<this.$root.cart.length;index++) {
+            if(this.product._id == this.$root.cart[index]._id) {
+            count++
+          }
+        }
+
+        return {
+          count: count
+        }
+      },
+      methods:{
+        addProduct: function() {
+
+          this.$root.cart.push(this.product)
+          this.count++
+        },
+        removeProduct: function() {
+          if(this.count) {
+            for(let index=0;index<this.$root.cart.length;index++) {
+              if(this.product._id == this.$root.cart[index]._id) {
+                this.$root.cart.splice(index,1)
+                this.count--
+                break
+              }
+            }
+          }
+        }
+      },
+      template: `
+      <p class="btn-add">
+      <i class="fa fa-shopping-cart"></i>
+      <button v-on:click="addProduct()">+</button>
+      {{count}}
+      <button v-on:click="removeProduct()">-</button>
+      </p>
+`
+    })
+
+    new Vue({
+      el: '#app',
+      data () {
+        return {
+          orderDone: false,
+          products: [],
+          cart:[],
+          showCart:false
+        }
+      },
+      mounted () {
+        this.getProducts()
+      },
+      methods: {
+        getProducts: function () {
+          this.products = []
+          axios.get('/user/getProducts')
+                  .then(response => (this.products = response.data))
+                  .catch(err => console.log(err))
+        },
+        addToCart: function(product) {
+          this.cart.push(product)
+        },
+        makeOrder: function() {
+          axios.post('/user/makeOrder',this.cart)
+                  .then(response => {
+                    if(response.data) {
+                      this.orderDone = true
+                      this.cart = []
+                      setTimeout(()=>{
+                        this.orderDone = false
+                      },5000)
+                    }
+                  }).catch(function(err){
+            console.log(err)
+          })
+        }
+      }
+    })
+
   </script>
 
 </body>

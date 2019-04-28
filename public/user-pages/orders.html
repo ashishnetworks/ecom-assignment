@@ -11,10 +11,15 @@
   <title>Simple Sidebar - Start Bootstrap Template</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="staic/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom styles for this template -->
-  <link href="staic/css/simple-sidebar.css" rel="stylesheet">
+  <link href="/static/css/simple-sidebar.css" rel="stylesheet">
+  <script src="/static/js/vue.js"></script>
+  <script src="/static/js/axios.min.js"></script>
+
+  <script src="/static/js/jspdf.min.js"></script>
+  <script src="/static/js/jspdf.plugin.autotable.js"></script>
 
 </head>
 
@@ -26,9 +31,9 @@
     <div class="bg-light border-right" id="sidebar-wrapper">
       <div class="sidebar-heading">Menu Items</div>
       <div class="list-group list-group-flush">
-        <a href="profile.html" class="list-group-item list-group-item-action bg-light">Profile</a>
-        <a href="products.html" class="list-group-item list-group-item-action bg-light">Products</a>
-        <a href="orders.html" class="list-group-item list-group-item-action bg-light activate">Orders</a>
+        <a href="profilePage" class="list-group-item list-group-item-action bg-light">Profile</a>
+        <a href="productsPage" class="list-group-item list-group-item-action bg-light">Products</a>
+        <a href="ordersPage" class="list-group-item list-group-item-action bg-light activate">Orders</a>
       </div>
     </div>
     <!-- /#sidebar-wrapper -->
@@ -46,40 +51,44 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
             <li class="nav-item active">
-              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="signOut">Sign Out <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Dropdown
-              </a>
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </div>
             </li>
           </ul>
         </div>
       </nav>
 
-      <div class="container-fluid">
+      <div class="container-fluid" id="app">
         <h1 class="mt-4">Orders</h1>
-        <table class="table">
+        <div v-if="showDetail">
+
+          <table class="table" id="invoice">
+            <th>Item</th>
+            <th>Price</th>
+            <tr v-for="item of cart">
+              <td>{{item.name}}</td>
+              <td>{{item.price}}</td>
+            </tr>
+            <tr>
+              <th>Total</th>
+              <th>{{cart.reduce((accumulator,item)=>accumulator+item.price,0)}}</th>
+            </tr>
+          </table>
+          <button v-on:click="showDetail=false;cart=[]">Back</button>
+          <button v-on:click="downloadInvoice()">Download Invoice</button>
+        </div>
+
+
+        <table class="table" v-if="!showDetail">
           <tr>
             <th>Order Date</th>
-            <th>Delivery Date</th>
             <th>Amount</th>
             <th>Invoice</th>
           </tr>
-          <tr>
-            <td>1</td>
-            <td>Wheat</td>
-            <td>Good</td>
-            <td>200 Bags</td>
+          <tr v-for="order of orders">
+            <td>{{new Date(order.createdAt).toLocaleDateString()}}</td>
+            <td>{{order.price}}</td>
+            <td><button v-on:click="orderDetails(order.cart)">Show Details</button></td>
           </tr>
         </table>
       </div>
@@ -90,8 +99,8 @@
   <!-- /#wrapper -->
 
   <!-- Bootstrap core JavaScript -->
-  <script src="../vendor/jquery/jquery.min.js"></script>
-  <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/static/vendor/jquery/jquery.min.js"></script>
+  <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <!-- Menu Toggle Script -->
   <script>
@@ -101,6 +110,43 @@
     });
   </script>
 
+  <script>
+
+    new Vue({
+      el: '#app',
+      data () {
+        return {
+          orders: [],
+          cart: [],
+          showDetail: false
+        }
+      },
+      mounted () {
+        this.getOrders()
+      },
+      methods: {
+        getOrders: function () {
+          this.products = []
+          axios.get('/user/getOrders')
+                  .then(response => {
+                    this.orders = response.data
+                    console.log(this.orders)
+                  })
+                  .catch(err => console.log(err))
+        },
+        orderDetails: function (cart) {
+          this.cart = cart
+          this.showDetail = true
+        },
+        downloadInvoice: function () {
+          var doc = new jsPDF();
+          doc.autoTable({html: '#invoice'});
+          doc.save('table.pdf');
+        }
+      }
+    })
+
+  </script>
 </body>
 
 </html>
