@@ -10,7 +10,7 @@ router.use("/admin",admin)
 router.use("/user",user)
 
 router.use("/",function(req,res){
-    res.redirect("/user")
+    res.redirect("/user/sign")
 })
 
 module.exports = router
