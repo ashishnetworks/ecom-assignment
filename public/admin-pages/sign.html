@@ -128,7 +128,7 @@
                 that.success = []
                 that.errors = []
 
-                axios.post('http://localhost:3000/admin/signup', this.signupData)
+                axios.post('/admin/signup', this.signupData)
                     .then(function (response) {
                         let reply = response.data
                         console.log(reply)
