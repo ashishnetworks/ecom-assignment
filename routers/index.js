@@ -9,4 +9,8 @@ const admin = require("./admin")
 router.use("/admin",admin)
 router.use("/user",user)
 
+router.use("/",function(req,res){
+    res.redirect("/user")
+})
+
 module.exports = router

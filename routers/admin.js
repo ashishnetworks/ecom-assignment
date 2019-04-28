@@ -6,6 +6,7 @@ const userModel = require("../db/models/user")
 const productModel = require("../db/models/products")
 const orderModel = require("../db/models/orders")
 const passportOfficer = require("../helpers/passport.officer")
+const getMd5Sum = require("../helpers/getMd5Sum")
 
 router.get("/hi",function(req,res){
 
@@ -41,7 +42,7 @@ router.post("/signup", async function (req,res) {
 
         let user = new userModel({
             fullname:fullname, username: username,
-            password: password, address: address, type: "admin"
+            password: getMd5Sum(password), address: address, type: "admin"
         })
 
         try {
@@ -130,7 +131,7 @@ router.post("/updateUserDetail", async function(req,res){
     }
 
     if(body.password) {
-        updateObject.password = body.password
+        updateObject.password = getMd5Sum(body.password)
     }
 
     try {

@@ -2,6 +2,7 @@
 const passport = require("passport")
 const LocalStrategy = require("passport-local").Strategy
 const userModel = require("../db/models/user")
+const getMd5Sum = require("../helpers/getMd5Sum")
 
 passport.use(new LocalStrategy({},async function(username,password,done) {
 
@@ -14,7 +15,7 @@ passport.use(new LocalStrategy({},async function(username,password,done) {
     }
 
     if(userObject) {
-        if(userObject.password === password) {
+        if(userObject.password === getMd5Sum(password)) {
             done(null,userObject)
             return
         }
